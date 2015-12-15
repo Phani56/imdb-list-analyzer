@@ -50,8 +50,8 @@
 (defn result-handler [response]
     (do
     (println (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
-    (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
     (swap! dom-state assoc :loading false)
+    (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
     (make-histogram)))
 
 (defn error-handler [{:keys [status status-text]}]
@@ -162,7 +162,7 @@
       [:button {:class  "btn btn-default"
                 :onClick #(make-histogram)}
        "Re-render graph"]
-     
+
      ;Replaced by the graph
      #_[:table.table
        [:thead
