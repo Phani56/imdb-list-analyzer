@@ -2,6 +2,7 @@
   (:require
     [reagent.core :as r]
     [ajax.core :refer [GET POST]]
+    [goog.dom :as gdom]
     [goog.string :as gstring]
     [goog.string.format]))
 
@@ -24,12 +25,31 @@
 (defn map-to-pair-data [m]
   (reduce #(conj %1 {:x (key %2) :y (val %2)}) [] m))
 
-(defn make-histogram []
+(defn dir-data-to-scatter [dir-data]
+  (reduce #(conj %1
+                 {:values [{:x (count (last (first %2)))
+                            :y (last %2)}]
+                  :key (first (first %2))})
+          [] dir-data))
+
+(defn group-duplicates-helper [acc next]
+  (conj acc {:values (first next)
+             :key (reduce #(conj %1 (:key %2)) [] (second next))}))
+
+(defn group-dir-scatter-duplicates
+  "Groupes duplicate value pairs from NVD3-formatted data and replaces
+   :key to be a sequence of grouped items :key. This grouping is necessary
+   as there is a bug in NVD3 that causes a crash if there occurs duplicate
+   value pairs in data."
+  [dir-scatter-data]
+  (reduce group-duplicates-helper [] (group-by :values dir-scatter-data)))
+
+(defn make-histogram! []
   (when @app-state
     (.addGraph js/nv (fn []
                        (let [chart (.. js/nv -models multiBarChart)]
                          (.. chart -xAxis
-                             (tickFormat (.format js/d3 ",f"))
+                             (tickFormat (.format js/d3 ",d"))
                              (axisLabel "Rating"))
                          (.. chart -yAxis
                              (tickFormat (.format js/d3 ",f"))
@@ -47,12 +67,35 @@
                                                  :key "imdb frequency"}]))
                                (call chart))))))))
 
+(defn make-scatterplot! []
+  (when @app-state
+    (.addGraph js/nv (fn []
+                       (let [chart (.. js/nv -models scatterChart)]
+                         (.showLegend chart false)
+                         (.. chart -xAxis
+                             (tickFormat (.format js/d3 ".0f"))
+                             (axisLabel "number of movies watched"))
+                         (.. chart -yAxis
+                             (tickFormat (.format js/d3 ".02f"))
+                             (axisLabel "Rank p-value"))
+                         (let [results @app-state
+                               single-results (:singleresults results)
+                               dir-data (:dir-ranks single-results)
+                               dirs-to-scatter (dir-data-to-scatter dir-data)
+                               bundled-dirs-to-scatter (group-dir-scatter-duplicates dirs-to-scatter)]
+                           (.. js/d3 (select "#scatterplot svg")
+                               (datum (clj->js bundled-dirs-to-scatter
+                                               #_[{:values my-data
+                                                 :key "xd"}]))
+                               (call chart))))))))
+
 (defn result-handler [response]
     (do
     (println (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
     (swap! dom-state assoc :loading false)
     (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
-    (make-histogram)))
+    (make-histogram!)
+    (make-scatterplot!)))
 
 (defn error-handler [{:keys [status status-text]}]
   (do
@@ -61,6 +104,10 @@
 
 (defn histogram-component []
   [:div {:id "barchart" :style {:width 700 :height 400}}
+   [:svg]])
+
+(defn scatterplot-component []
+  [:div {:id "scatterplot" :style {:width 700 :height 400}}
    [:svg]])
 
 (defn inst-component []
@@ -160,7 +207,7 @@
 
      ;Button to re-render the histogram, as the graph is sometimes bugged on first load
       [:button {:class  "btn btn-default"
-                :onClick #(make-histogram)}
+                :onClick #(make-histogram!)}
        "Re-render graph"]
 
      ;Replaced by the graph
@@ -179,6 +226,12 @@
            [:td (val freq)]
            [:td (str (round-num (* 100 (/ (val freq) (:num single-results))) 2) " %")]
            [:td (get imdb-freqs (key freq))]])]]
+
+     [:h3 "Directors: Watched movies and p-value"]
+     [scatterplot-component]
+     [:button {:class  "btn btn-default"
+               :onClick #(make-scatterplot!)}
+      "Re-render graph"]
 
       [:h3 "The best directors"]
       [:table.table
@@ -224,7 +277,6 @@
   [:div.container
     [inst-component]
     [form-component]
-   ;[histogram-component]
     [result-component]])
 
 (defn ^:export run []
