@@ -19,6 +19,11 @@
     num
     (gstring/format (str "%." precision "f") num)))
 
+(defn rgb-string [red green blue]
+  "Function generates CSS-formatted rgb-string
+  that can be used e.g. with NVD3 library."
+  (str "rgb(" red "," green "," blue ")"))
+
 (defn map-keywords-to-int [m]
   (reduce #(assoc %1 (-> %2 key name int) (val %2)) {} m))
 
@@ -44,6 +49,18 @@
   [dir-scatter-data]
   (reduce group-duplicates-helper [] (group-by :values dir-scatter-data)))
 
+(defn add-color-to-scatter [dir-scatter-data]
+  "Adds new key-value pair :color for each scatter point.
+  Color value is determined based y-value.
+  Color is sclaed from red (low y-value) to blue (high y-value)"
+  (reduce #(let [y-score (:y (first (:values %2)))]
+            (conj %1 (assoc %2 :color (rgb-string
+                                        (int (* 255 (- 1 y-score)))
+                                        0
+                                        (int (* 255 y-score))))))
+          []
+          dir-scatter-data))
+
 (defn make-histogram! []
   (when @app-state
     (.addGraph js/nv (fn []
@@ -54,6 +71,8 @@
                          (.. chart -yAxis
                              (tickFormat (.format js/d3 ",f"))
                              (axisLabel "Frequency"))
+                         (. chart showControls
+                             false)
                          (let [results @app-state
                                single-results (:singleresults results)
                                freqs (map-keywords-to-int (:freq-hash single-results))
@@ -77,25 +96,27 @@
                              (axisLabel "number of movies watched"))
                          (.. chart -yAxis
                              (tickFormat (.format js/d3 ".02f"))
-                             (axisLabel "Rank p-value"))
+                             (axisLabel "Score"))
+                         ;Deprecated, point value based color used instead.
+                         #_(. chart color
+                              (clj->js [(rgb-string 100 100 100) (rgb-string 200 200 200)] #_["rgb(0,255,0)" "rgb(255,165,0)"]))
                          (let [results @app-state
                                single-results (:singleresults results)
                                dir-data (:dir-ranks single-results)
                                dirs-to-scatter (dir-data-to-scatter dir-data)
-                               bundled-dirs-to-scatter (group-dir-scatter-duplicates dirs-to-scatter)]
+                               bundled-dirs-to-scatter (group-dir-scatter-duplicates dirs-to-scatter)
+                               colored-dirs-to-scatter (add-color-to-scatter bundled-dirs-to-scatter)]
                            (.. js/d3 (select "#scatterplot svg")
-                               (datum (clj->js bundled-dirs-to-scatter
-                                               #_[{:values my-data
-                                                 :key "xd"}]))
+                               (datum (clj->js colored-dirs-to-scatter))
                                (call chart))))))))
 
 (defn result-handler [response]
     (do
-    (println (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
-    (swap! dom-state assoc :loading false)
-    (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
-    (make-histogram!)
-    (make-scatterplot!)))
+      (println (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
+      (swap! dom-state assoc :loading false)
+      (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
+      (make-histogram!)
+      (make-scatterplot!)))
 
 (defn error-handler [{:keys [status status-text]}]
   (do
