@@ -20,7 +20,8 @@
       (swap! dom-state assoc :loading false)
       (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
       (graphs/make-histogram! @app-state "#barchart svg")
-      (graphs/make-scatterplot! @app-state "#scatterplot svg")))
+      (graphs/make-scatterplot! @app-state "#scatterplot svg")
+      (graphs/make-h-multi-bar-chart! @app-state "#h-multi-bar-chart svg")))
 
 (defn error-handler [{:keys [status status-text]}]
   (do
@@ -33,6 +34,10 @@
 
 (defn scatterplot-component []
   [:div {:id "scatterplot" :style {:width 700 :height 400}}
+   [:svg]])
+
+(defn h-multi-bar-chart-component []
+  [:div {:id "h-multi-bar-chart" :style {:width 1000 :height 400}}
    [:svg]])
 
 (defn inst-component []
@@ -194,6 +199,12 @@
           [:td dir]
           [:td p-value]
           [:td rates]])]]
+
+     [:h3 "Movies with unexpected ratings"]
+     [h-multi-bar-chart-component]
+     [:button {:class  "btn btn-default"
+               :onClick #(graphs/make-h-multi-bar-chart! @app-state "#h-multi-bar-chart svg")}
+      "Re-render graph"]
 
      #_[:p (str "RAW DEV")
      #_[:p (str results)]]]))
