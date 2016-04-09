@@ -20,6 +20,13 @@
                   :label (str (:title %2) " - Rating: " (:rate %2) " IMDB: " (:imdb-rate %2))})
           [] disc-data))
 
+(defn discrepancy-data-to-line-chart [disc-data]
+  (reduce #(conj %1
+                 {:values [{:x (:discrepancy %2)
+                            :y 0 }]
+                  :key (str (:title %2) " - Rating: " (:rate %2) " IMDB: " (:imdb-rate %2))})
+          [] disc-data))
+
 (defn group-duplicates-helper [acc next]
   "Helper function for 'group-dir-scatter-duplicates'.
   In addition to accumulated results function gets a next data point that is
@@ -57,7 +64,8 @@
   e.g. '#barchart svg' "
   (when data
     (.addGraph js/nv (fn []
-                       (let [chart (.. js/nv -models multiBarChart)]
+                       (let [chart (.. js/nv -models multiBarChart
+                                       (tooltips false))]
                          (.. chart -xAxis
                              (tickFormat (.format js/d3 ",d"))
                              (axisLabel "Rating"))
@@ -119,27 +127,40 @@
                                        (showControls false)
                                        (tooltips false)
                                        (showValues true))]
-                         #_(.. chart margin
-                             (left 120))
-                         #_(.. chart -xAxis
-                             (tickFormat (.format js/d3 ",.2f"))
-                             (axisLabel "Discrepancy"))
-                         #_(.. chart -yAxis
-                             (tickFormat (.format js/d3 ",f"))
-                             (axisLabel "Frequency"))
                          (let [results data
                                single-results (:singleresults results)
-                               top-ten-disc (take 5 (:discrepancy single-results))
-                               last-ten-disc (take-last 5 (:discrepancy single-results))
+                               top-ten-disc (take 10 (:discrepancy single-results))
+                               last-ten-disc (take-last 10 (:discrepancy single-results))
                                top-ten-disc-formatted (discrepancy-data-to-value-label-map top-ten-disc)
                                last-ten-disc-formatted (discrepancy-data-to-value-label-map last-ten-disc)]
                            (.. js/d3 (select html-svg-loc-str)
-                               (datum (clj->js [{:values #_[{:label "lol1" :value 1}
-                                                          {:label "lol2" :value 2}] top-ten-disc-formatted
+                               (datum (clj->js [{:values top-ten-disc-formatted
                                                  :key "top"
                                                  :color "#4f99b4"}
-                                                {:values #_[{:label "lol-1" :value -1}
-                                                          {:label "lol-2" :value -2}] last-ten-disc-formatted
+                                                {:values last-ten-disc-formatted
                                                  :key "bottom"
                                                  :color "#d67777"}]))
+                               (call chart))))))))
+
+(defn make-linechart! [data html-svg-loc-str]
+  "NVD3 scatterChart graph with Y-values set to 0.  Data-parmeter should be a map containing :singleresults
+  (e.g. core.cljs/@app-state after the csv-analysis). Html-svg-loc-str is the location of the svg-element,
+  (e.g. '#barchart svg')"
+  (when data
+    (.addGraph js/nv (fn []
+                       (let [chart (.. js/nv -models scatterChart
+                                       (showYAxis false)
+                                       (showLegend false))]
+                         (.. chart -xAxis
+                             (tickFormat (.format js/d3 ".02f"))
+                             (axisLabel "Discrepancy"))
+                        (let [results data
+                              single-results (:singleresults results)
+                              top-ten-disc (take 10 (:discrepancy single-results))
+                              last-ten-disc (take-last 10 (:discrepancy single-results))
+                              merged-disc-data (distinct (clojure.set/union top-ten-disc last-ten-disc))
+                              formatted-disc-data (discrepancy-data-to-line-chart merged-disc-data)
+                              grouped-disc-data (group-dir-scatter-duplicates formatted-disc-data)]
+                           (.. js/d3 (select html-svg-loc-str)
+                               (datum (clj->js grouped-disc-data))
                                (call chart))))))))
