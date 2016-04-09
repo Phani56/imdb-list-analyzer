@@ -46,15 +46,15 @@
   [dir-scatter-data]
   (reduce group-duplicates-helper [] (group-by :values dir-scatter-data)))
 
-(defn add-color-to-scatter [dir-scatter-data]
+(defn add-color-to-scatter [dir-scatter-data scale-key]
   "Adds new key-value pair :color for each scatter point.
-  Color value is determined based y-value.
-  Color is sclaed from red (low y-value) to blue (high y-value)"
-  (reduce #(let [y-score (:y (first (:values %2)))]
+  Color value is determined based key-value (e.g. :x or :y).
+  Color is sclaed from red (low key-value) to blue (high key-value)"
+  (reduce #(let [score (scale-key (first (:values %2)))]
             (conj %1 (assoc %2 :color (utils/rgb-str
-                                        (int (* 255 (- 1 y-score)))
+                                        (int (* 255 (- 1 score)))
                                         0
-                                        (int (* 255 y-score))))))
+                                        (int (* 255 score))))))
           []
           dir-scatter-data))
 
@@ -109,7 +109,7 @@
                                dir-data (:dir-ranks single-results)
                                dirs-to-scatter (dir-data-to-scatter dir-data)
                                bundled-dirs-to-scatter (group-dir-scatter-duplicates dirs-to-scatter)
-                               colored-dirs-to-scatter (add-color-to-scatter bundled-dirs-to-scatter)]
+                               colored-dirs-to-scatter (add-color-to-scatter bundled-dirs-to-scatter :y)]
                            (.. js/d3 (select html-svg-loc-str)
                                (datum (clj->js colored-dirs-to-scatter))
                                (call chart))))))))
@@ -160,7 +160,8 @@
                               last-ten-disc (take-last 10 (:discrepancy single-results))
                               merged-disc-data (distinct (clojure.set/union top-ten-disc last-ten-disc))
                               formatted-disc-data (discrepancy-data-to-line-chart merged-disc-data)
-                              grouped-disc-data (group-dir-scatter-duplicates formatted-disc-data)]
+                              grouped-disc-data (group-dir-scatter-duplicates formatted-disc-data)
+                              colored-disc-data (add-color-to-scatter grouped-disc-data :x)]
                            (.. js/d3 (select html-svg-loc-str)
-                               (datum (clj->js grouped-disc-data))
+                               (datum (clj->js colored-disc-data))
                                (call chart))))))))
