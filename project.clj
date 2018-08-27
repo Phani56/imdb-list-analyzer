@@ -4,7 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [cheshire "5.5.0"]
+                 [org.clojure/data.csv "0.1.4"]  ; parsing CSV strings
+                 [cheshire "5.5.0"] ; JSON functions
                  [org.clojure/clojurescript "1.10.339"]
                  [reagent "0.5.1"]
                  [figwheel-sidecar "0.5.0-SNAPSHOT" :scope "provided"]
@@ -36,4 +37,5 @@
                      :auto-reload? false}}}
 
   :min-lein-version "2.0.0"
-  :main imdb-list-analyzer.core)
+  :main imdb-list-analyzer.core
+  :aot [imdb-list-analyzer.core])
