@@ -6,7 +6,7 @@ Internet Movie Database, or IMDb for short, offers a massive amount of informati
 
 ## Demo application
 
-https://evening-basin-4521.herokuapp.com/
+https://imdb-list-analyzer.herokuapp.com
 
 ## Installation
 The software is implemented in Clojure. It currently requires:
