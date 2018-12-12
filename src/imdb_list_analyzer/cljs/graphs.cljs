@@ -1,6 +1,7 @@
 (ns imdb-list-analyzer.cljs.graphs
   (:require
-    [imdb-list-analyzer.cljs.utils :as utils]))
+    [imdb-list-analyzer.cljs.utils :as utils]
+    [clojure.set]))
 
 (defn map-to-pair-data [m]
   "Function converts map to appropriate format format for NVD3 histrogram:
@@ -13,6 +14,19 @@
                             :y (last %2)}]
                   :key (first (first %2))})
           [] dir-data))
+
+(defn discrepancy-data-to-value-label-map [disc-data]
+  (reduce #(conj %1
+                 {:value (:discrepancy %2)
+                  :label (str (:title %2) " - Rating: " (:rate %2) " IMDB: " (:imdb-rate %2))})
+          [] disc-data))
+
+(defn discrepancy-data-to-line-chart [disc-data]
+  (reduce #(conj %1
+                 {:values [{:x (:discrepancy %2)
+                            :y 0}]
+                  :key (str (:title %2) " - Rating: " (:rate %2) " IMDB: " (:imdb-rate %2))})
+          [] disc-data))
 
 (defn group-duplicates-helper [acc next]
   "Helper function for 'group-dir-scatter-duplicates'.
@@ -33,15 +47,15 @@
   [dir-scatter-data]
   (reduce group-duplicates-helper [] (group-by :values dir-scatter-data)))
 
-(defn add-color-to-scatter [dir-scatter-data]
+(defn add-color-to-scatter [dir-scatter-data scale-key]
   "Adds new key-value pair :color for each scatter point.
-  Color value is determined based y-value.
-  Color is sclaed from red (low y-value) to blue (high y-value)"
-  (reduce #(let [y-score (:y (first (:values %2)))]
+  Color value is determined based key-value (e.g. :x or :y).
+  Color is sclaed from red (low key-value) to blue (high key-value)"
+  (reduce #(let [score (scale-key (first (:values %2)))]
             (conj %1 (assoc %2 :color (utils/rgb-str
-                                        (int (* 255 (- 1 y-score)))
+                                        (int (* 255 (- 1 score)))
                                         0
-                                        (int (* 255 y-score))))))
+                                        (int (* 255 score))))))
           []
           dir-scatter-data))
 
@@ -51,7 +65,8 @@
   e.g. '#barchart svg' "
   (when data
     (.addGraph js/nv (fn []
-                       (let [chart (.. js/nv -models multiBarChart)]
+                       (let [chart (.. js/nv -models multiBarChart
+                                       (tooltips false))]
                          (.. chart -xAxis
                              (tickFormat (.format js/d3 ",d"))
                              (axisLabel "Rating"))
@@ -95,7 +110,59 @@
                                dir-data (:dir-ranks single-results)
                                dirs-to-scatter (dir-data-to-scatter dir-data)
                                bundled-dirs-to-scatter (group-dir-scatter-duplicates dirs-to-scatter)
-                               colored-dirs-to-scatter (add-color-to-scatter bundled-dirs-to-scatter)]
+                               colored-dirs-to-scatter (add-color-to-scatter bundled-dirs-to-scatter :y)]
                            (.. js/d3 (select html-svg-loc-str)
                                (datum (clj->js colored-dirs-to-scatter))
+                               (call chart))))))))
+
+(defn make-h-multi-bar-chart! [data html-svg-loc-str]
+  "NVD3 multiBarHorizontalChart graph. Data-parmeter should be a map containing :singleresults
+  (e.g. core.cljs/@app-state after the csv-analysis). Html-svg-loc-str is the location of the svg-element,
+  e.g. '#barchart svg' "
+  (when data
+    (.addGraph js/nv (fn []
+                       (let [chart (.. js/nv -models multiBarHorizontalChart
+                                       (x #(.-label %))
+                                       (y #(.-value %))
+                                       (margin (clj->js {:left 350}))
+                                       (showControls false)
+                                       (tooltips false)
+                                       (showValues true))]
+                         (let [results data
+                               single-results (:singleresults results)
+                               top-ten-disc (take 10 (:discrepancy single-results))
+                               last-ten-disc (take-last 10 (:discrepancy single-results))
+                               top-ten-disc-formatted (discrepancy-data-to-value-label-map top-ten-disc)
+                               last-ten-disc-formatted (discrepancy-data-to-value-label-map last-ten-disc)]
+                           (.. js/d3 (select html-svg-loc-str)
+                               (datum (clj->js [{:values top-ten-disc-formatted
+                                                 :key "top"
+                                                 :color "#4f99b4"}
+                                                {:values last-ten-disc-formatted
+                                                 :key "bottom"
+                                                 :color "#d67777"}]))
+                               (call chart))))))))
+
+(defn make-linechart! [data html-svg-loc-str]
+  "NVD3 scatterChart graph with Y-values set to 0.  Data-parmeter should be a map containing :singleresults
+  (e.g. core.cljs/@app-state after the csv-analysis). Html-svg-loc-str is the location of the svg-element,
+  (e.g. '#barchart svg')"
+  (when data
+    (.addGraph js/nv (fn []
+                       (let [chart (.. js/nv -models scatterChart
+                                       (showYAxis false)
+                                       (showLegend false))]
+                         (.. chart -xAxis
+                             (tickFormat (.format js/d3 ".02f"))
+                             (axisLabel "Discrepancy"))
+                        (let [results data
+                              single-results (:singleresults results)
+                              top-ten-disc (take 10 (:discrepancy single-results))
+                              last-ten-disc (take-last 10 (:discrepancy single-results))
+                              merged-disc-data (distinct (clojure.set/union top-ten-disc last-ten-disc))
+                              formatted-disc-data (discrepancy-data-to-line-chart merged-disc-data)
+                              grouped-disc-data (group-dir-scatter-duplicates formatted-disc-data)
+                              colored-disc-data (add-color-to-scatter grouped-disc-data :x)]
+                           (.. js/d3 (select html-svg-loc-str)
+                               (datum (clj->js colored-disc-data))
                                (call chart))))))))

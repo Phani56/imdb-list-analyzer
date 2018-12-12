@@ -20,6 +20,8 @@
       (swap! dom-state assoc :loading false)
       (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
       (graphs/make-histogram! @app-state "#barchart svg")
+      (graphs/make-h-multi-bar-chart! @app-state "#h-multi-bar-chart svg")
+      (graphs/make-linechart! @app-state "#line-chart svg")
       (graphs/make-scatterplot! @app-state "#scatterplot svg")))
 
 (defn error-handler [{:keys [status status-text]}]
@@ -28,11 +30,19 @@
     (swap! dom-state assoc :loading false)))
 
 (defn histogram-component []
-  [:div {:id "barchart" :style {:width 700 :height 400}}
+  [:div {:id "barchart" :style {:width 1000 :height 400}}
    [:svg]])
 
 (defn scatterplot-component []
-  [:div {:id "scatterplot" :style {:width 700 :height 400}}
+  [:div {:id "scatterplot" :style {:width 1000 :height 400}}
+   [:svg]])
+
+(defn h-multi-bar-chart-component []
+  [:div {:id "h-multi-bar-chart" :style {:width 1000 :height 400}}
+   [:svg]])
+
+(defn line-chart-component []
+  [:div {:id "line-chart" :style {:width 1000 :height 150}}
    [:svg]])
 
 (defn inst-component []
@@ -175,7 +185,19 @@
          [:tr
           [:td dir]
           [:td p-value]
-          [:td rates]])]]]))
+          [:td rates]])]]
+
+     [:h3 "Movies with unexpected ratings, Chart 1"]
+     [h-multi-bar-chart-component]
+     [:button {:class  "btn btn-default"
+               :onClick #(graphs/make-h-multi-bar-chart! @app-state "#h-multi-bar-chart svg")}
+      "Re-render graph"]
+
+     [:h3 "Movies with unexpected ratings, Chart 2"]
+     [line-chart-component]
+     [:button {:class  "btn btn-default"
+               :onClick #(graphs/make-linechart! @app-state "#line-chart svg")}
+      "Re-render graph"]]))
 
 (defn root-component []
   [:div.container
