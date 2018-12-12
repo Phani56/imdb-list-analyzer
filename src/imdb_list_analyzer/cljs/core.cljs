@@ -16,7 +16,7 @@
 
 (defn result-handler [response]
     (do
-      (println (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
+      #_(println (-> response (js/JSON.parse) (js->clj :keywordize-keys true))) ;For debug
       (swap! dom-state assoc :loading false)
       (reset! app-state (-> response (js/JSON.parse) (js->clj :keywordize-keys true)))
       (graphs/make-histogram! @app-state "#barchart svg")
