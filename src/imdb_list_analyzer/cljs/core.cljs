@@ -41,11 +41,11 @@
    [:br]
    [:div
       [:h4 "Anyone with an IMDb account can retrieve their own ratings file as follows:"]
-        [:li "Login to www.imdb.com with you account."]
-        [:li "Search for a personal \"Your Ratings\" view that contains all your rated movies."]
-        [:li "Click \"Export this list\" at the bottom of the page."]
-        [:li "Save file into the filesystem."]
-        [:li "Use 'Choose file' & 'Analyze file' buttons to analyze your ratings"]]])
+      [:li "Login to www.imdb.com with you account."]
+      [:li "Search for a personal \"Your Ratings\" view that contains all your rated movies."]
+      [:li "Click \"Export this list\" at the bottom of the page."]
+      [:li "Save file into the filesystem."]
+      [:li "Use 'Choose file' & 'Analyze file' buttons to analyze your ratings"]]])
 
 (defn form-component []
   [:div.container
@@ -63,19 +63,19 @@
     [:br]
     [:div {:class "inline"}
      [:input  {:class "btn btn-primary"
-              :type "button"
-              :value "Analyze file"
-              :disabled (or
+               :type "button"
+               :value "Analyze file"
+               :disabled (or
                           (:loading @dom-state)
                           (nil? (:file @dom-state)))
-              :onClick #(do
-                         (swap! dom-state assoc :loading true)
-                         (swap! dom-state assoc :error nil)
-                         (POST "/analyze"
-                              {:body (js/FormData.
-                                       (.getElementById js/document "csv-form"))
-                               :handler result-handler
-                               :error-handler error-handler}))}]
+               :onClick #(do
+                           (swap! dom-state assoc :loading true)
+                           (swap! dom-state assoc :error nil)
+                           (POST "/analyze"
+                                 {:body (js/FormData.
+                                          (.getElementById js/document "csv-form"))
+                                  :handler result-handler
+                                  :error-handler error-handler}))}]
      [:br]
      [:br]
      [:input  {:class "btn btn-default"
@@ -88,7 +88,7 @@
                           (POST "/analyze-example"
                                 {:handler result-handler
                                  :error-handler error-handler}))}]
-       [:div.loading {:hidden (not (:loading @dom-state))}
+     [:div.loading {:hidden (not (:loading @dom-state))}
         [:i {:class "fa fa-cog fa-spin fa-4x"}]]]]
    [:div {:class "container"}
     [:h4 (:error @dom-state)]]])
@@ -103,7 +103,7 @@
     [:div.container {:id "results-elem"
                      :hidden (nil? results)}
      [:h3 "IMDB single-list analysis results"]
-      [:table.table
+     [:table.table
        [:thead
         [:tr
          [:th "Metric"]
@@ -126,31 +126,13 @@
           [:td "Correlation between ratings and IMDb rating averages"]
           [:td (str (utils/round-num (:corr single-results) 2))]
           [:td ""]]]]]
-
-      [:h3 "Frequencies of ratings"]
-      [histogram-component]
+     [:h3 "Frequencies of ratings"]
+     [histogram-component]
 
      ;Button to re-render the histogram, as the graph is sometimes bugged on first load
-      [:button {:class  "btn btn-default"
+     [:button {:class  "btn btn-default"
                 :onClick #(graphs/make-histogram! @app-state "#barchart svg")}
        "Re-render graph"]
-
-     ;Deprecated, replaced by the graph
-     #_[:table.table
-       [:thead
-        [:tr
-         [:th "Rate"]
-         [:th "Frequency"]
-         [:th "Freq %"]
-         [:th "IMDb frequency"]]]
-       [:tbody
-        (for [freq freqs]
-          ^{:key (key freq)}
-          [:tr
-           [:td (str (key freq))]
-           [:td (val freq)]
-           [:td (str (round-num (* 100 (/ (val freq) (:num single-results))) 2) " %")]
-           [:td (get imdb-freqs (key freq))]])]]
 
      [:h3 "Directors: Watched movies and score"]
      [scatterplot-component]
@@ -158,8 +140,8 @@
                :onClick #(graphs/make-scatterplot! @app-state "#scatterplot svg")}
       "Re-render graph"]
 
-      [:h3 "The best directors"]
-      [:table.table
+     [:h3 "The best directors"]
+     [:table.table
         [:thead
          [:tr
           [:th "Director-name"]
@@ -193,10 +175,7 @@
          [:tr
           [:td dir]
           [:td p-value]
-          [:td rates]])]]
-
-     #_[:p (str "RAW DEV")
-     #_[:p (str results)]]]))
+          [:td rates]])]]]))
 
 (defn root-component []
   [:div.container
