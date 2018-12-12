@@ -30,7 +30,7 @@
     (println request)
     ;Response
     (resview/jsonify-single-result
-      (core/one-file-analysis (io/resource "example_ratings_A.csv")))))
+      (core/one-file-analysis (io/resource "example_ratings_2018_format_A.csv")))))
 
 (defroutes site-routes
            (GET "/" [] (resource-response "index.html" {:root "public"}))
