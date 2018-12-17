@@ -118,24 +118,24 @@
         [:tr
          [:th "Metric"]
          [:th "Result"]
-         [:th "IMDB Average"]]
-        [:tbody
-         [:tr
-          [:td "Number of movie ratings"]
-          [:td (str (:num single-results))]
-          [:td ""]]
-         [:tr
-          [:td "Mean of movie ratings"]
-          [:td (str (utils/round-num (:mean single-results) 2))]
-          [:td (str (utils/round-num (:imdb-mean single-results) 2))]]
-         [:tr
-          [:td "Standard deviation of movie ratings"]
-          [:td (str (utils/round-num (:stdev single-results) 2))]
-          [:td (str (utils/round-num (:imdb-stdev single-results) 2))]]
-         [:tr
-          [:td "Correlation between ratings and IMDb rating averages"]
-          [:td (str (utils/round-num (:corr single-results) 2))]
-          [:td ""]]]]]
+         [:th "IMDB Average"]]]
+       [:tbody
+        [:tr
+         [:td "Number of movie ratings"]
+         [:td (str (:num single-results))]
+         [:td ""]]
+        [:tr
+         [:td "Mean of movie ratings"]
+         [:td (str (utils/round-num (:mean single-results) 2))]
+         [:td (str (utils/round-num (:imdb-mean single-results) 2))]]
+        [:tr
+         [:td "Standard deviation of movie ratings"]
+         [:td (str (utils/round-num (:stdev single-results) 2))]
+         [:td (str (utils/round-num (:imdb-stdev single-results) 2))]]
+        [:tr
+         [:td "Correlation between ratings and IMDb rating averages"]
+         [:td (str (utils/round-num (:corr single-results) 2))]
+         [:td ""]]]]
      [:h3 "Frequencies of ratings"]
      [histogram-component]
 
