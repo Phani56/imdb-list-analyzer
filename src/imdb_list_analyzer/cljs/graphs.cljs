@@ -65,8 +65,8 @@
   e.g. '#barchart svg' "
   (when data
     (.addGraph js/nv (fn []
-                       (let [chart (.. js/nv -models multiBarChart
-                                       (tooltips false))]
+                       (let [chart (.. js/nv -models multiBarChart)]
+                         (.. chart -tooltip (enabled false))
                          (.. chart -xAxis
                              (tickFormat (.format js/d3 ",d"))
                              (axisLabel "Rating"))
@@ -126,8 +126,8 @@
                                        (y #(.-value %))
                                        (margin (clj->js {:left 350}))
                                        (showControls false)
-                                       (tooltips false)
                                        (showValues true))]
+                         (.. chart -tooltip (enabled false))
                          (let [results data
                                single-results (:singleresults results)
                                top-ten-disc (take 10 (:discrepancy single-results))
