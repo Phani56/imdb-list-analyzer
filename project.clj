@@ -6,8 +6,8 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.csv "0.1.4"]  ; parsing CSV strings
                  [cheshire "5.5.0"] ; JSON functions
-                 [org.clojure/clojurescript "1.10.339"]
-                 [reagent "0.5.1"]
+                 [org.clojure/clojurescript "1.10.439"]
+                 [reagent "0.8.1"]
                  [figwheel-sidecar "0.5.0-SNAPSHOT" :scope "provided"]
                  [compojure "1.4.0"]
                  [ring/ring-core "1.4.0"]
