@@ -9,12 +9,9 @@ Internet Movie Database, or IMDb for short, offers a massive amount of informati
 https://imdb-list-analyzer.herokuapp.com
 
 ## Installation
-The software is implemented in Clojure. It currently requires:
+The software is implemented in Clojure. 
 
-* Clojure 1.7.0 or newer
-* clojure.data.csv 0.1.4 or newer
-* cheshire 5.5.0 or newer
-* Leiningen 2.2.0 or newer (optional)
+For specific version requirement and library dependencies see :dependencies in project.clj.
 
 Installation guide:
 
@@ -50,11 +47,30 @@ with an ordinary combination of `java` and `clojure.jar`. Add the command-line p
 
 ### Web GUI
 
+#### Development mode
+
+For most use cases, I recommend the awesome interactive web development mode powered by [figwheel-main](https://github.com/bhauman/figwheel-main).
+
+    $ lein trampoline run -m figwheel.main -- -b dev -r
+    
+Open http://localhost:9500/ in browser and follow instructions.
+
+#### Deployment
+
+To deployment application locally, use following command:
+
     $ lein with-profile production ring server
 
 Open http://localhost:3000/ in browser and follow instructions.
 
+#### Heroku
+
+Project has Heroku support, see Procfile in the project root. We currently use Heroku's git deployments that work with Procfile.
+
+#### Example files
+
 If you don't have an IMDB account you can use the example files from 'resources/'.
+
 
 ## Input files
 

@@ -1,4 +1,4 @@
-(ns ^:figwheel-always imdb-list-analyzer.cljs.core
+(ns ^:figwheel-always ^:figwheel-hooks imdb-list-analyzer.cljs.core
   (:require
     [imdb-list-analyzer.cljs.utils :as utils]
     [imdb-list-analyzer.cljs.graphs :as graphs]
@@ -205,6 +205,6 @@
     [form-component]
     [result-component]])
 
-(defn ^:export run []
+(defn ^:export ^:after-load run []
   (r/render [root-component]
             (.getElementById js/document "app")))

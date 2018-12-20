@@ -1,0 +1,4 @@
+^{:watch-dirs ["src"]
+ :ring-handler imdb-list-analyzer.server/app}
+
+{:main imdb-list-analyzer.cljs.core}
