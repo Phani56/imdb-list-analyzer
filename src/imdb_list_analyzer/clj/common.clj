@@ -1,7 +1,7 @@
 ;;; Common functions to be used anywhere in the
 ;;; imdb-list-analyzer program.
 
-(ns imdb-list-analyzer.common)
+(ns imdb-list-analyzer.clj.common)
  
 (defn invert-multimap
   [rate-lists]

@@ -1,1 +1,1 @@
-web: lein with-profile production ring server $PORT
+web: java -jar target/imdb-list-analyzer-standalone.jar

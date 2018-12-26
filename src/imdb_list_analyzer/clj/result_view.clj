@@ -1,9 +1,9 @@
 ;;; Viewer for results from IMDb list analysis (on a single list)
 
-(ns imdb-list-analyzer.result-view
+(ns imdb-list-analyzer.clj.result-view
   (:require [clojure.string :as string]
-            [imdb-list-analyzer.analysis :as ana]
-            [imdb-list-analyzer.imdb-data :as imdb]
+            [imdb-list-analyzer.clj.analysis :as ana]
+            [imdb-list-analyzer.clj.imdb-data :as imdb]
             [cheshire.core :as json])
   (:import (java.util Locale)))
 

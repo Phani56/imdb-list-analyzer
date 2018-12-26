@@ -6,7 +6,7 @@
 
 (ns imdb-list-analyzer.core-test
   (:require [clojure.test :refer :all]
-            [imdb-list-analyzer.core :refer :all]))
+            [imdb-list-analyzer.clj.core :refer :all]))
 
 (deftest passing-test
   (testing "Trivial test that passes."

@@ -18,30 +18,32 @@
   :plugins       [[lein-ring "0.9.7"]
                   [lein-cljsbuild "1.1.7"]]
 
-  :ring {:handler imdb-list-analyzer.server/app}
-  ;; dev mode
-  :resource-paths ["target" "resources"]
-  :clean-targets ^{:protect false} ["target" "resources/public/cljs-out"]
-  ;; dev mode
+  ; for figwheel
+  ;:resource-paths ["target" "resources"] ; this will break lein uberjar, moved to profiles
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "build-dev" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev" "-r"]}
-  :profiles {:production
-             {:hooks [leiningen.cljsbuild]
-              :cljsbuild {
-                          :builds [{
-                                    :source-paths ["src"]
-                                    :compiler {
-                                               :id "prod"
-                                               :output-to "resources/public/cljs-out/dev-main.js"  ; default: target/cljsbuild-main.js
-                                               :output-dir "resources/public/cljs-out"
-                                               :figwheel false
-                                               :optimizations :whitespace
-                                               :pretty-print false}}]}
-              :ring {
-                     :open-browser? false
-                     :stacktraces? false
-                     :auto-reload? false}}}
+
+  :clean-targets ^{:protect false} ["target" "resources/public/cljs-out"]
+  :profiles {:uberjar
+             {:omit-source true
+              :prep-tasks  ["compile" ["cljsbuild" "once" "prod"]]
+              :aot :all
+              :cljsbuild   {
+                            :builds {:prod {
+                                            :source-paths ["src/imdb_list_analyzer/cljs"]
+                                            :compiler     {
+                                                           :output-to "resources/public/cljs-out/dev-main.js"
+                                                           ;TODO :adavanced optimization do not work for some reason
+                                                           :optimizations :whitespace
+                                                           :pretty-print  false}}}}
+              :uberjar-name "imdb-list-analyzer-standalone.jar"
+              :source-paths ["src/imdb_list_analyzer/clj"]
+              :resource-paths ["resources/public"]}
+             :figwheel {:resource-paths ["target" "resources"]}}
+
+
 
   :min-lein-version "2.0.0"
-  :main imdb-list-analyzer.core
-  :aot [imdb-list-analyzer.core])
+  :main imdb-list-analyzer.clj.core)
+
+

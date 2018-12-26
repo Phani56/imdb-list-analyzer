@@ -51,15 +51,17 @@ with an ordinary combination of `java` and `clojure.jar`. Add the command-line p
 
 For most use cases, I recommend the awesome interactive web development mode powered by [figwheel-main](https://github.com/bhauman/figwheel-main).
 
-    $ lein trampoline run -m figwheel.main -- -b dev -r
+    $ lein with-profile figwheel trampoline run -m figwheel.main -- -b dev -r
     
 Open http://localhost:9500/ in browser and follow instructions.
 
 #### Deployment
 
-To deployment application locally, use following command:
+To deployment the application, build uberjar and run the jar with java:
 
-    $ lein with-profile production ring server
+    $ lein uberjar
+    
+    $ java -jar target/imdb-list-analyzer-standalone.jar
 
 Open http://localhost:3000/ in browser and follow instructions.
 

@@ -3,7 +3,7 @@
 ;; Esa Junttila
 ;; 2018-08-05 (originally 2013-06-30 and 2015-11-01)
 
-(ns imdb-list-analyzer.imdb-data
+(ns imdb-list-analyzer.clj.imdb-data
   (:require [clojure.string :as string] ; shorthand
             [clojure.data.csv :as csv]  ; parse CSV strings
             [cheshire.core :as json])   ; handle JSON string format

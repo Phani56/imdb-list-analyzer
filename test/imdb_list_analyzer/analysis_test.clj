@@ -6,8 +6,8 @@
 
 (ns imdb-list-analyzer.analysis-test
   (:require [clojure.test :refer :all]
-            [imdb-list-analyzer.imdb-data :refer :all]
-            [imdb-list-analyzer.analysis :refer :all]))
+            [imdb-list-analyzer.clj.imdb-data :refer :all]
+            [imdb-list-analyzer.clj.analysis :refer :all]))
 
 (def tol 0.0000001)
 

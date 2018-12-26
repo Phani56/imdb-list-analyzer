@@ -19,10 +19,11 @@
 ;;;
 ;;; Esa Junttila 2015-11-01 (originally 2013-06-29)
 
-(ns imdb-list-analyzer.core
-  (:require [imdb-list-analyzer.imdb-data :as imdb]
-            [imdb-list-analyzer.result-view :as resview]
-            [imdb-list-analyzer.dual-result-view :as dualview])
+(ns imdb-list-analyzer.clj.core
+  (:require [imdb-list-analyzer.clj.imdb-data :as imdb]
+            [imdb-list-analyzer.clj.result-view :as resview]
+            [imdb-list-analyzer.clj.dual-result-view :as dualview]
+            [imdb-list-analyzer.clj.server :refer [start-server]])
   (:import (java.io File))
   (:gen-class))
 
@@ -103,16 +104,19 @@
   [& args]
   ;; work around dangerous default behaviour in Clojure
   (alter-var-root #'*read-eval* (constantly false))
-  (case (count args)
-    0 (print-usage)
-    1 (when-let [res (one-file-analysis (first args))]
-        (do
-          (resview/view-results res)
-          (print (one-json-input-analysis (imdb/convert-csv-to-json-str (imdb/read-raw-data (first args)))))))
-    2 (when-let [res (dual-file-analysis (first args) (second args))]
-        (do
-          (dualview/view-dual-results res)
-          (print (dual-json-input-analysis
-                   (imdb/convert-csv-to-json-str (imdb/read-raw-data (first args)))
-                   (imdb/convert-csv-to-json-str (imdb/read-raw-data (second args)))))))
-    (print-usage)))
+  ;TODO fix with command line options
+  (start-server)
+  ;temporary disable
+  #_(case (count args)
+      0 (print-usage)
+      1 (when-let [res (one-file-analysis (first args))]
+          (do
+            (resview/view-results res)
+            (print (one-json-input-analysis (imdb/convert-csv-to-json-str (imdb/read-raw-data (first args)))))))
+      2 (when-let [res (dual-file-analysis (first args) (second args))]
+          (do
+            (dualview/view-dual-results res)
+            (print (dual-json-input-analysis
+                     (imdb/convert-csv-to-json-str (imdb/read-raw-data (first args)))
+                     (imdb/convert-csv-to-json-str (imdb/read-raw-data (second args)))))))
+      (print-usage)))

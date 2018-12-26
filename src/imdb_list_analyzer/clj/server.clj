@@ -1,13 +1,19 @@
-(ns imdb-list-analyzer.server
+(ns imdb-list-analyzer.clj.server
   (:gen-class)
-  (:require [imdb-list-analyzer.core :as core]
-            [imdb-list-analyzer.result-view :as resview]
+  (:require [imdb-list-analyzer.clj.imdb-data :as imdb]
+            [imdb-list-analyzer.clj.result-view :as resview]
             [compojure.core :refer [GET POST defroutes routes context]]
             [compojure.handler :refer [site api]]
             [compojure.route :refer [resources not-found files]]
             [ring.util.response :refer [response status resource-response]]
             [ring.middleware.multipart-params :as multiparams]
+            [ring.adapter.jetty :refer [run-jetty]]
             [clojure.java.io :as io]))
+
+;TODO needed to do non-dependent version from core to avoid cyclic dependency
+(defn imdb-file-analysis [file]
+  (resview/compute-results
+    (rest (imdb/parse-imdb-data (imdb/read-raw-data file)))))
 
 (defn handle-hello-req []
   (do
@@ -22,7 +28,7 @@
     ;(println (core/one-file-analysis (:tempfile (:csv (:params request)))))
     ;Response
     (resview/jsonify-single-result
-      (core/one-file-analysis (:tempfile (:csv (:params request)))))))
+      (imdb-file-analysis (:tempfile (:csv (:params request)))))))
 
 (defn handle-example-req [request]
   (do
@@ -30,7 +36,7 @@
     (println request)
     ;Response
     (resview/jsonify-single-result
-      (core/one-file-analysis (io/resource "example_ratings_2018_format_A.csv")))))
+      (imdb-file-analysis (io/resource "example_ratings_2018_format_A.csv")))))
 
 (defroutes site-routes
            (GET "/" [] (resource-response "index.html" {:root "public"}))
@@ -44,6 +50,8 @@
   (site site-routes))
 
 (def app
-  (-> (routes sites)
-      multiparams/wrap-multipart-params))
+  (-> (routes sites
+       multiparams/wrap-multipart-params)))
 
+(defn start-server []
+  (run-jetty #'app {:port 3000}))

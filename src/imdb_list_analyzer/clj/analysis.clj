@@ -1,10 +1,10 @@
 ;;; Analysis tools for IMDb lists
 
-(ns imdb-list-analyzer.analysis
+(ns imdb-list-analyzer.clj.analysis
   (:require
-    [imdb-list-analyzer.math-tools :as mtools]
-    [imdb-list-analyzer.imdb-data :as imdb]
-    [imdb-list-analyzer.common :as com]
+    [imdb-list-analyzer.clj.math-tools :as mtools]
+    [imdb-list-analyzer.clj.imdb-data :as imdb]
+    [imdb-list-analyzer.clj.common :as com]
     [clojure.set])
   (:import (java.util Collections)))
 

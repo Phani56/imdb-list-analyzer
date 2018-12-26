@@ -1,8 +1,8 @@
 ;;; Viewer for results from IMDb dual-list analysis (from two IMDb lists)
 
-(ns imdb-list-analyzer.dual-result-view
-  (:require [imdb-list-analyzer.analysis :as ana]
-            [imdb-list-analyzer.result-view :as resview]
+(ns imdb-list-analyzer.clj.dual-result-view
+  (:require [imdb-list-analyzer.clj.analysis :as ana]
+            [imdb-list-analyzer.clj.result-view :as resview]
             [cheshire.core :as json]))
 
 "Storage for dual-list analysis results"

@@ -6,7 +6,7 @@
 
 (ns imdb-list-analyzer.math-tools-test
   (:require [clojure.test :refer :all]
-            [imdb-list-analyzer.math-tools :refer :all]))
+            [imdb-list-analyzer.clj.math-tools :refer :all]))
 
 (def tol 0.0000001)
 
@@ -121,8 +121,8 @@
     (is (thrown? AssertionError (variance [])) "too small collection")
     (is (thrown? AssertionError (variance [7])) "too small collection")
     (is (thrown? AssertionError (variance [1 2 nil])) "non-number in collection")
-    (is (thrown? AssertionError (variance [1 [] 2])) "non-number in collection")
-    ))
+    (is (thrown? AssertionError (variance [1 [] 2])) "non-number in collection")))
+
     
 
 (deftest variance-int

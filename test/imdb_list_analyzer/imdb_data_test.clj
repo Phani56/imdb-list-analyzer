@@ -6,7 +6,7 @@
 
 (ns imdb-list-analyzer.imdb-data-test
   (:require [clojure.test :refer :all]
-            [imdb-list-analyzer.imdb-data :refer :all]))
+            [imdb-list-analyzer.clj.imdb-data :refer :all]))
 
 ;
 ; Old IMDb CSV format (pre-2017)
