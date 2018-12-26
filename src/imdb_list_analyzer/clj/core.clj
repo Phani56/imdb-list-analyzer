@@ -104,8 +104,9 @@
   [& args]
   ;; work around dangerous default behaviour in Clojure
   (alter-var-root #'*read-eval* (constantly false))
-  ;TODO fix with command line options
-  (start-server)
+  ;TODO Temporary proof-of-concept for testing, fix with proper command line options
+  (let [port (-> args first Integer.)]
+    (start-server port))
   ;temporary disable
   #_(case (count args)
       0 (print-usage)

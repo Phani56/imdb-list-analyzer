@@ -1,1 +1,1 @@
-web: java -jar target/imdb-list-analyzer-standalone.jar
+web: java -jar target/imdb-list-analyzer-standalone.jar $PORT

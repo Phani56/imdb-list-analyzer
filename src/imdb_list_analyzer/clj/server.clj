@@ -53,5 +53,5 @@
   (-> (routes sites
        multiparams/wrap-multipart-params)))
 
-(defn start-server []
-  (run-jetty #'app {:port 3000}))
+(defn start-server [port]
+  (run-jetty #'app {:port port}))
