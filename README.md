@@ -69,6 +69,13 @@ Open http://localhost:3000/ in browser and follow instructions.
 
 Project has Heroku support, see Procfile in the project root. We currently use Heroku's git deployments that work with Procfile.
 
+#### Docker (WIP)
+
+    $ docker build -t imdb-list-analyzer-web .
+    $ docker run -e PORT=3000 -p 3000:3000 imdb-list-analyzer-web
+   
+Open http://localhost:3000/ in browser and follow instructions.
+
 #### Example files
 
 If you don't have an IMDB account you can use the example files from 'resources/'.
