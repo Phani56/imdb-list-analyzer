@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: workshop
+  namespace: imdb
   name: imdb-list-analyzer
   labels:
     app: imdb-list-analyzer
