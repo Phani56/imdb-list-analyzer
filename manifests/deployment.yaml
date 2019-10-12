@@ -20,7 +20,7 @@ spec:
       annotations:
     spec:
       containers:
-        - image: gcr.io/unity-ads-workshop-test/imdb-list-analyzer:master
+        - image: gcr.io/unity-ads-workshop-test/tkasu-imdb-list-analyzer:master
           name: tomi-imdb-list-analyzer
           imagePullPolicy: Always
           resources:
