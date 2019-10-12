@@ -4,4 +4,5 @@ WORKDIR /usr/src/app
 RUN lein uberjar
 ENV JAVA_OPTS='-XX:+UseContainerSupport -Xmx300m -Xss512k'
 ENV PORT=8080
+EXPOSE $PORT
 CMD java $JAVA_OPTS -jar target/imdb-list-analyzer-standalone.jar $PORT
