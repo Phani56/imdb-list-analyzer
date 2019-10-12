@@ -61,7 +61,7 @@ jobs:
             kubectl config current-context
 
             service=tomi-imdb-list-analyzer
-            namespace=workshop
+            namespace=imdb
 
             if kubectl get service ${service}-lb -n ${namespace} > /dev/null; then
               kubectl delete service ${service}-lb -n ${namespace};
