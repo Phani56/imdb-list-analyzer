@@ -20,7 +20,7 @@ spec:
       annotations:
     spec:
       containers:
-        - image: gcr.io/imdb-list-analyzer/imdb-list-analyzer:develop
+        - image: gcr.io/imdb-list-analyzer/imdb-list-analyzer:master
           name: imdb-list-analyzer
           imagePullPolicy: Always
           resources:
