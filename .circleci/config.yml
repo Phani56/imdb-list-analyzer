@@ -60,7 +60,7 @@ jobs:
             gcloud container clusters get-credentials ${CLUSTER} --zone ${CLUSTER_ZONE} --project ${GCP_PROJECT}
             kubectl config current-context
 
-            service=tomi-imdb-list-analyzer
+            service=imdb-list-analyzer
             namespace=imdb
 
             if kubectl get service ${service}-lb -n ${namespace} > /dev/null; then
