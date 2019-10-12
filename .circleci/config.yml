@@ -37,9 +37,9 @@ jobs:
             docker build -t ${image}:${CIRCLE_SHA1} .
             docker push ${image}:${CIRCLE_SHA1}
 
-            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              docker tag ${image}:${CIRCLE_SHA1} ${image}:develop
-              docker push ${image}:develop
+            if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              docker tag ${image}:${CIRCLE_SHA1} ${image}:${CIRCLE_BRANCH}"
+              docker push ${image}:${CIRCLE_BRANCH}"
             fi
 
   deploy:

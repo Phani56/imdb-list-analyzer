@@ -2,9 +2,9 @@ kind: Service
 apiVersion: v1
 metadata:
   labels:
-    app: tomi-imdb-list-analyzer
-  name: tomi-imdb-list-analyzer
-  namespace: workshop
+    app: imdb-list-analyzer
+  name: imdb-list-analyzer
+  namespace: imdb
 
 spec:
   type: NodePort
@@ -14,4 +14,4 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: tomi-imdb-list-analyzer
+    app: imdb-list-analyzer

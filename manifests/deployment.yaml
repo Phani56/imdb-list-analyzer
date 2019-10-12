@@ -2,26 +2,26 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   namespace: workshop
-  name: tomi-imdb-list-analyzer
+  name: imdb-list-analyzer
   labels:
-    app: tomi-imdb-list-analyzer
+    app: imdb-list-analyzer
 
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   selector:
     matchLabels:
-      app: tomi-imdb-list-analyzer
+      app: imdb-list-analyzer
 
   template:
     metadata:
       labels:
-        app: tomi-imdb-list-analyzer
+        app: imdb-list-analyzer
       annotations:
     spec:
       containers:
-        - image: gcr.io/unity-ads-workshop-test/tkasu-imdb-list-analyzer:develop
-          name: tomi-imdb-list-analyzer
+        - image: gcr.io/imdb-list-analyzer/imdb-list-analyzer:develop
+          name: imdb-list-analyzer
           imagePullPolicy: Always
           resources:
             requests:
