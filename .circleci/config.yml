@@ -27,19 +27,19 @@ jobs:
       - run:
           command: |
             echo Authenticating...
-            echo ${WORKSHOP_CI_ACCOUNT_TOKEN_BASE64} | base64 --decode > .WORKSHOP_CI_ACCOUNT_TOKEN.json
-            gcloud auth activate-service-account ${WORKSHOP_CI_USER} --key-file=.WORKSHOP_CI_ACCOUNT_TOKEN.json >/dev/null 2>&1
+            echo ${CI_ACCOUNT_TOKEN_BASE64} | base64 --decode > .CI_ACCOUNT_TOKEN.json
+            gcloud auth activate-service-account ${CI_USER} --key-file=.CI_ACCOUNT_TOKEN.json >/dev/null 2>&1
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io >/dev/null 2>&1
 
             set -x
-            image=gcr.io/unity-ads-workshop-test/tkasu-imdb-list-analyzer
+            image=gcr.io/imdb-list-analyzer/imdb-list-analyzer
 
             docker build -t ${image}:${CIRCLE_SHA1} .
             docker push ${image}:${CIRCLE_SHA1}
 
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker tag ${image}:${CIRCLE_SHA1} ${image}:master
-              docker push ${image}:master
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              docker tag ${image}:${CIRCLE_SHA1} ${image}:develop
+              docker push ${image}:develop
             fi
 
   deploy:
@@ -53,11 +53,11 @@ jobs:
       - run:
           command: |
             echo Authenticating...
-            echo ${WORKSHOP_CI_ACCOUNT_TOKEN_BASE64} | base64 --decode > .WORKSHOP_CI_ACCOUNT_TOKEN.json
-            gcloud auth activate-service-account ${WORKSHOP_CI_USER} --key-file=.WORKSHOP_CI_ACCOUNT_TOKEN.json >/dev/null 2>&1
+            echo ${CI_ACCOUNT_TOKEN_BASE64} | base64 --decode > .CI_ACCOUNT_TOKEN.json
+            gcloud auth activate-service-account ${CI_USER} --key-file=.CI_ACCOUNT_TOKEN.json >/dev/null 2>&1
 
             set -x
-            gcloud container clusters get-credentials ${WORKSHOP_CLUSTER} --zone ${WORKSHOP_CLUSTER_ZONE} --project ${WORKSHOP_GCP_PROJECT}
+            gcloud container clusters get-credentials ${CLUSTER} --zone ${CLUSTER_ZONE} --project ${GCP_PROJECT}
             kubectl config current-context
 
             service=tomi-imdb-list-analyzer
