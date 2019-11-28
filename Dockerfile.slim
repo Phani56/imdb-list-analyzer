@@ -7,6 +7,9 @@ FROM openjdk:11-jre-stretch
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/target/imdb-list-analyzer-standalone.jar ./target/
 COPY --from=builder /usr/src/app/resources/ ./resources/
+RUN useradd -m app_user && \
+    chown -R app_user .
+USER app_user
 ENV JAVA_OPTS='-XX:+UseContainerSupport -Xmx300m -Xss512k'
 ENV PORT=8080
 EXPOSE $PORT
