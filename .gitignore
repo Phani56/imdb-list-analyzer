@@ -5,3 +5,11 @@
 .lein-failures
 .lein-repl-history
 .nrepl-port
+resources/public/cljs-out/
+infrastructure/account.json
+infrastructure/.tflogs
+infrastructure/.terraform/*
+infrastructure/terraform.tfstate
+infrastructure/terraform.tfstate.backup
+.rebel_readline_history
+.DS_Store
