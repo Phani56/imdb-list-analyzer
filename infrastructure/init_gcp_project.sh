@@ -23,4 +23,4 @@ gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$SERV
 gcloud iam service-accounts keys create account.json --iam-account=$SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com
 
 # 6) enable base services APIs
-gcloud services enable compute.googleapis.com sourcerepo.googleapis.com
+gcloud services enable compute.googleapis.com sourcerepo.googleapis.com cloudbuild.googleapis.com
