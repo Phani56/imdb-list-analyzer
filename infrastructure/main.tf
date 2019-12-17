@@ -1,6 +1,7 @@
 locals {
     services = [
-        "container.googleapis.com"
+        "container.googleapis.com",
+        "sourcerepo.googleapis.com"
     ]
 }
 
@@ -43,4 +44,12 @@ resource "google_container_cluster" "gke-cluster" {
     create = "30m"
     update = "40m"
   }
+}
+
+resource "google_sourcerepo_repository" "repo" {
+  depends_on = [
+    google_project_service.enabled_service["sourcerepo.googleapis.com"]
+  ]
+ 
+  name = "${var.namespace}-repo"
 }

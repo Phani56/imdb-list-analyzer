@@ -12,7 +12,7 @@ BILLING_ACCOUNT=$(gcloud beta billing accounts list --filter open=true --uri | a
 gcloud beta billing projects link $PROJECT_ID --billing-account $BILLING_ACCOUNT
 
 # 3) create service account
-SERVICE_ACCOUNT_NAME=terraform_imdb
+SERVICE_ACCOUNT_NAME=terraform
 gcloud config set core/project $PROJECT_ID
 gcloud iam service-accounts create $SERVICE_ACCOUNT_NAME
 
@@ -23,4 +23,4 @@ gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$SERV
 gcloud iam service-accounts keys create account.json --iam-account=$SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com
 
 # 6) enable base services APIs
-gcloud services enable compute.googleapis.com
+gcloud services enable compute.googleapis.com sourcerepo.googleapis.com
