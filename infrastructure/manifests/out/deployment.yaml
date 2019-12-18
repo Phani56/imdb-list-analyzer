@@ -35,4 +35,4 @@ spec:
               value: some env value
 
       nodeSelector:
-        cloud.google.com/gke-nodepool: pool-1
+        cloud.google.com/gke-nodepool: default-pool
