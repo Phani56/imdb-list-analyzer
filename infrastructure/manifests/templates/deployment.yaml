@@ -1,27 +1,27 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: imdb
-  name: imdb-list-analyzer
+  namespace: ${gke_namespace}
+  name: ${gke_name}
   labels:
-    app: imdb-list-analyzer
+    app: ${project_id}
 
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   selector:
     matchLabels:
-      app: imdb-list-analyzer
+      app: ${project_id}
 
   template:
     metadata:
       labels:
-        app: imdb-list-analyzer
+        app: ${project_id}
       annotations:
     spec:
       containers:
-        - image: gcr.io/imdb-list-analyzer/imdb-list-analyzer:master
-          name: imdb-list-analyzer
+        - image: ${repo_name}:master
+          name: ${project_id}
           imagePullPolicy: Always
           resources:
             requests:

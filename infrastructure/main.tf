@@ -26,7 +26,7 @@ resource "google_container_cluster" "gke-cluster" {
     google_project_service.enabled_service["container.googleapis.com"]
   ]
 
-  name               = "my-test-cluster"
+  name               = var.gke_name
   location           = var.region
   initial_node_count = 1
 
@@ -55,6 +55,27 @@ resource "google_sourcerepo_repository" "repo" {
   name = "${var.namespace}-repo"
 }
 
+resource "local_file" "kube_deployment_manifest" {
+  content = templatefile("./manifests/templates/deployment.yaml",
+    {
+        project_id=var.project_id
+        gke_name=var.gke_name
+        gke_namespace=var.gke_namespace
+        repo_name=local.image
+    })
+    filename = "./manifests/out/deployment.yaml"
+}
+
+resource "local_file" "kube_service_manifest" {
+  content = templatefile("./manifests/templates/service.yaml",
+    {
+        project_id=var.project_id
+        gke_name=var.gke_name
+        gke_namespace=var.gke_namespace
+    })
+    filename = "./manifests/out/service.yaml"
+}
+
 locals {
   image = "gcr.io/${var.project_id}/${var.namespace}"
   steps = [
@@ -65,7 +86,17 @@ locals {
     {
       name = "gcr.io/cloud-builders/docker"
       args = ["push", local.image]
-    }
+    },
+    {
+      name = "gcr.io/cloud-builders/kubectl"
+      args = ["apply", "-f", "./manifests/service.yaml", "-f", "./manifests/deployment.yaml"]
+      env = ["CLOUDSDK_COMPUTE_ZONE=${var.region}", "CLOUDSDK_CONTAINER_CLUSTER=${var.gke_name}"]
+    }#,
+    #{
+    # name = "gcr.io/cloud-builders/kubectl"
+    #  args = ["expose", "deployment", "-n", "${namespace}", "${service}", "--type=LoadBalancer", "--name=${service}-lb", "--port=8080"]
+    #  env = ["CLOUDSDK_COMPUTE_ZONE=${var.region}", "CLOUDSDK_CONTAINER_CLUSTER=${var.gke_name}"]
+    #}
   ]
 }
 

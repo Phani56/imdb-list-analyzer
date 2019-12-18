@@ -15,7 +15,13 @@ variable "namespace" {
 }
 
 variable "gke_name" {
-    default = "My imdb app kube cluster."
+    default = "my-test-cluster"
     description = "Goole Kubernetes Engine cluster name"
+    type = string
+}
+
+variable "gke_namespace" {
+    default = "imdb"
+    description = "Goole Kubernetes Engine cluster's namespace'"
     type = string
 }
