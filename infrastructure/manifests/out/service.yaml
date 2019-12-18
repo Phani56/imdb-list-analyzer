@@ -2,8 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   labels:
-    app: imdblistanalyzer
-  name: imdblistanalyzer
+    app: imdbanatest
+  name: imdbanatest
   namespace: default
 
 spec:
@@ -14,4 +14,4 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: imdblistanalyzer
+    app: imdbanatest

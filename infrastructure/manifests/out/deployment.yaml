@@ -2,26 +2,26 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   namespace: default
-  name: imdblistanalyzer
+  name: imdbanatest
   labels:
-    app: imdblistanalyzer
+    app: imdbanatest
 
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   selector:
     matchLabels:
-      app: imdblistanalyzer
+      app: imdbanatest
 
   template:
     metadata:
       labels:
-        app: imdblistanalyzer
+        app: imdbanatest
       annotations:
     spec:
       containers:
-        - image: gcr.io/imdblistanalyzer/imdb-to-kube:latest
-          name: imdblistanalyzer
+        - image: gcr.io/imdbanatest/imdb-to-kube:latest
+          name: imdbanatest
           imagePullPolicy: Always
           resources:
             requests:
