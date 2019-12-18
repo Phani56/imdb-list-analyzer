@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   labels:
     app: imdblistanalyzer
-  name: my-test-cluster
+  name: imdblistanalyzer
   namespace: default
 
 spec:

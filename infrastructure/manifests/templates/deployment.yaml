@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   namespace: ${gke_namespace}
-  name: ${gke_name}
+  name: ${project_id}
   labels:
     app: ${project_id}
 
