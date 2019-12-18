@@ -89,14 +89,14 @@ locals {
     },
     {
       name = "gcr.io/cloud-builders/kubectl"
-      args = ["apply", "-f", "./manifests/service.yaml", "-f", "./manifests/deployment.yaml"]
+      args = ["apply", "-f", "./infrastructure/manifests/out/service.yaml", "-f", "./infrastructure/manifests/out/deployment.yaml"]
       env = ["CLOUDSDK_COMPUTE_ZONE=${var.region}", "CLOUDSDK_CONTAINER_CLUSTER=${var.gke_name}"]
-    }#,
-    #{
-    # name = "gcr.io/cloud-builders/kubectl"
-    #  args = ["expose", "deployment", "-n", "${namespace}", "${service}", "--type=LoadBalancer", "--name=${service}-lb", "--port=8080"]
-    #  env = ["CLOUDSDK_COMPUTE_ZONE=${var.region}", "CLOUDSDK_CONTAINER_CLUSTER=${var.gke_name}"]
-    #}
+    },
+    {
+     name = "gcr.io/cloud-builders/kubectl"
+      args = ["expose", "deployment", "-n", "${var.gke_namespace}", "${var.project_id}", "--type=LoadBalancer", "--name=${var.project_id}-lb", "--port=8080"]
+      env = ["CLOUDSDK_COMPUTE_ZONE=${var.region}", "CLOUDSDK_CONTAINER_CLUSTER=${var.gke_name}"]
+    }
   ]
 }
 

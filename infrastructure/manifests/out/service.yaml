@@ -4,7 +4,7 @@ metadata:
   labels:
     app: imdblistanalyzer
   name: my-test-cluster
-  namespace: imdb
+  namespace: default
 
 spec:
   type: NodePort
