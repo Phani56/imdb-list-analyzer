@@ -20,7 +20,7 @@ spec:
       annotations:
     spec:
       containers:
-        - image: ${repo_name}:master
+        - image: ${repo_name}:latest
           name: ${project_id}
           imagePullPolicy: Always
           resources:
