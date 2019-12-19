@@ -2,8 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   labels:
-    app: imdbanatest
-  name: imdbanatest
+    app: imdbgcpproject
+  name: imdbgcpproject
   namespace: default
 
 spec:
@@ -14,4 +14,4 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: imdbanatest
+    app: imdbgcpproject

@@ -76,6 +76,32 @@ Project has Heroku support, see Procfile in the project root. We currently use H
    
 Open http://localhost:3000/ in browser and follow instructions.
 
+#### Google Cloud Platofrm with Cloud Build CI/CD and Kubernetes
+
+1. Create account to Google Cloud Platform if not registered already
+
+2. Install gcloud & Docker
+
+3. Create a new project, attach billing to it. Add your service account's [accounts.json](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
+) to infrastructure/init_gcp_project.sh
+
+4. Change infrastructure/terraform.tfvars to match your GCP project.
+
+5. To build Docker-image for deployment, see infra_build_image.sh
+
+6. To see GCP infrastructure to be built, see infra_plan.sh
+
+7. To deploy infrastructure to GCP, see infra_create.sh
+	* After creating, you can see gcp source repository url
+
+8. To deploy the application [push application](https://cloud.google.com/source-repositories/docs/pushing-code-from-a-repository) to source repository url that was outputted previously.
+
+9. Check that applications was successfully deployed from Cloud Build in Google Cloud Platform.
+
+10. Navigate to Kubernetes Engine in Google Cloud Platform's Console and find application's load balancer's url and see that the app is working
+
+11. To destroy built infrastructure, see infra_destroy.sh
+
 #### Example files
 
 If you don't have an IMDB account you can use the example files from 'resources/'.

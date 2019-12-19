@@ -1,0 +1,14 @@
+.git
+.gitignore
+.editorconfig
+**/.terraform
+*.tfstate
+*.tfstate.*
+.idea
+*.iml
+.build-harness
+build-harness
+target/
+infrastructure/account.json
+infrastructure/terraform.tfstate
+infrastructure/terraform.tfstate.backup

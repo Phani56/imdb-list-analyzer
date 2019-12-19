@@ -2,26 +2,26 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   namespace: default
-  name: imdbanatest
+  name: imdbgcpproject
   labels:
-    app: imdbanatest
+    app: imdbgcpproject
 
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   selector:
     matchLabels:
-      app: imdbanatest
+      app: imdbgcpproject
 
   template:
     metadata:
       labels:
-        app: imdbanatest
+        app: imdbgcpproject
       annotations:
     spec:
       containers:
-        - image: gcr.io/imdbanatest/imdb-to-kube:latest
-          name: imdbanatest
+        - image: gcr.io/imdbgcpproject/imdb-to-kube:latest
+          name: imdbgcpproject
           imagePullPolicy: Always
           resources:
             requests:
